@@ -1,118 +1,1187 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dashboard – StudyFlow</title>
-  <link rel="stylesheet" href="./assets/css/style.css" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>StudyFlow</title>
+    <!-- Font & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <style>
+        /* ── Reset & Base ── */
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f0f4fe;
+            color: #1a1f36;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* ── App Container ── */
+        .app {
+            max-width: 420px;
+            width: 100%;
+            background: #ffffff;
+            border-radius: 32px;
+            box-shadow: 0 20px 60px rgba(26, 31, 54, 0.10);
+            overflow: hidden;
+            position: relative;
+            padding: 24px 20px 90px;
+            transition: all 0.2s;
+        }
+
+        /* ── Scrollbar ── */
+        .app::-webkit-scrollbar {
+            width: 4px;
+        }
+        .app::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .app::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+
+        /* ── Screens (view switching) ── */
+        .screen {
+            display: none;
+            animation: fadeUp 0.3s ease;
+        }
+        .screen.active {
+            display: block;
+        }
+
+        @keyframes fadeUp {
+            0% {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ── Typography helpers ── */
+        .text-muted {
+            color: #6b728e;
+            font-size: 14px;
+        }
+        .text-small {
+            font-size: 13px;
+        }
+        .text-xs {
+            font-size: 11px;
+        }
+        .fw-600 {
+            font-weight: 600;
+        }
+        .fw-700 {
+            font-weight: 700;
+        }
+
+        /* ── Buttons ── */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 16px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.2s;
+            background: #eef2f6;
+            color: #1a1f36;
+        }
+        .btn-primary {
+            background: #4f6af5;
+            color: #fff;
+            box-shadow: 0 6px 20px rgba(79, 106, 245, 0.30);
+        }
+        .btn-primary:hover {
+            background: #3b56e0;
+            transform: translateY(-1px);
+        }
+        .btn-outline {
+            background: transparent;
+            border: 1.5px solid #d1d9e6;
+            color: #1a1f36;
+        }
+        .btn-outline:hover {
+            border-color: #4f6af5;
+            color: #4f6af5;
+        }
+        .btn-sm {
+            padding: 10px 16px;
+            font-size: 14px;
+            border-radius: 12px;
+            width: auto;
+        }
+
+        /* ── Inputs ── */
+        .input-group {
+            margin-bottom: 18px;
+        }
+        .input-group label {
+            display: block;
+            font-weight: 500;
+            font-size: 14px;
+            margin-bottom: 6px;
+            color: #1f2937;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1.5px solid #e5eaf0;
+            border-radius: 14px;
+            font-size: 15px;
+            background: #f8fafc;
+            transition: 0.2s;
+            outline: none;
+            font-family: 'Inter', sans-serif;
+        }
+        .input-group input:focus {
+            border-color: #4f6af5;
+            background: #fff;
+            box-shadow: 0 0 0 4px rgba(79, 106, 245, 0.08);
+        }
+        .input-group input::placeholder {
+            color: #b0b8c9;
+        }
+
+        /* ── Auth screens ── */
+        .auth-header {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+        .auth-header .logo {
+            font-size: 28px;
+            font-weight: 700;
+            color: #4f6af5;
+            letter-spacing: -0.5px;
+        }
+        .auth-header .logo i {
+            margin-right: 6px;
+        }
+        .auth-header p {
+            color: #6b728e;
+            font-size: 15px;
+            margin-top: 6px;
+        }
+
+        .auth-options {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 14px;
+            margin: 6px 0 20px;
+        }
+        .auth-options label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #374151;
+            cursor: pointer;
+        }
+        .auth-options a {
+            color: #4f6af5;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .auth-options a:hover {
+            text-decoration: underline;
+        }
+
+        .auth-footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #6b728e;
+        }
+        .auth-footer a {
+            color: #4f6af5;
+            font-weight: 600;
+            text-decoration: none;
+        }
+        .auth-footer a:hover {
+            text-decoration: underline;
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin: 20px 0;
+            color: #b0b8c9;
+            font-size: 13px;
+        }
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #e5eaf0;
+        }
+
+        /* ── Dashboard ── */
+        .greeting {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 6px;
+        }
+        .greeting h1 {
+            font-size: 22px;
+            font-weight: 700;
+        }
+        .greeting h1 span {
+            color: #4f6af5;
+        }
+        .greeting .date {
+            color: #6b728e;
+            font-size: 14px;
+            background: #f1f4fa;
+            padding: 4px 14px;
+            border-radius: 30px;
+            font-weight: 500;
+        }
+
+        .goal-card {
+            background: linear-gradient(135deg, #4f6af5, #7c5cfc);
+            border-radius: 20px;
+            padding: 18px 20px;
+            color: #fff;
+            margin: 16px 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .goal-card .goal-label {
+            font-size: 14px;
+            opacity: 0.85;
+        }
+        .goal-card .goal-number {
+            font-size: 32px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+        .goal-card .goal-number small {
+            font-size: 16px;
+            font-weight: 400;
+            opacity: 0.7;
+        }
+
+        .nav-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 6px;
+            margin-bottom: 18px;
+        }
+        .nav-grid .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: 10px 4px;
+            border-radius: 16px;
+            background: #f8fafc;
+            cursor: pointer;
+            transition: 0.2s;
+            border: none;
+            font-family: 'Inter', sans-serif;
+            color: #1f2937;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .nav-grid .nav-item i {
+            font-size: 20px;
+            color: #4f6af5;
+        }
+        .nav-grid .nav-item:hover {
+            background: #eef2fe;
+            transform: translateY(-2px);
+        }
+        .nav-grid .nav-item.active {
+            background: #eef2fe;
+            box-shadow: inset 0 0 0 2px #4f6af5;
+        }
+
+        .quote-box {
+            background: #f8fafc;
+            border-radius: 16px;
+            padding: 14px 18px;
+            font-style: italic;
+            color: #374151;
+            font-size: 14px;
+            border-left: 4px solid #4f6af5;
+            margin-bottom: 20px;
+        }
+        .quote-box .author {
+            display: block;
+            text-align: right;
+            font-style: normal;
+            font-weight: 600;
+            color: #4f6af5;
+            margin-top: 4px;
+            font-size: 13px;
+        }
+
+        /* ── Score card ── */
+        .score-row {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            background: #f8fafc;
+            border-radius: 18px;
+            padding: 14px 18px;
+            margin-bottom: 18px;
+        }
+        .score-row .big-score {
+            font-size: 36px;
+            font-weight: 700;
+            color: #1a1f36;
+            line-height: 1;
+        }
+        .score-row .big-score small {
+            font-size: 18px;
+            font-weight: 500;
+            color: #6b728e;
+        }
+        .score-row .score-meta {
+            font-size: 14px;
+            color: #6b728e;
+        }
+        .score-row .score-meta .trend {
+            color: #22c55e;
+            font-weight: 600;
+        }
+        .score-row .score-meta .trend.down {
+            color: #ef4444;
+        }
+
+        /* ── Task list ── */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 18px 0 10px;
+        }
+        .section-header h3 {
+            font-size: 18px;
+            font-weight: 700;
+        }
+        .section-header a {
+            color: #4f6af5;
+            font-size: 14px;
+            font-weight: 500;
+            text-decoration: none;
+        }
+
+        .task-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 14px;
+            background: #f8fafc;
+            border-radius: 14px;
+            margin-bottom: 8px;
+            transition: 0.15s;
+            cursor: default;
+        }
+        .task-item:hover {
+            background: #f1f4fe;
+        }
+        .task-item .task-info {
+            display: flex;
+            flex-direction: column;
+        }
+        .task-item .task-name {
+            font-weight: 600;
+            font-size: 15px;
+        }
+        .task-item .task-deadline {
+            font-size: 12px;
+            color: #6b728e;
+            margin-top: 1px;
+        }
+        .task-item .task-deadline i {
+            margin-right: 4px;
+            font-size: 11px;
+        }
+        .task-item .task-badge {
+            background: #eef2fe;
+            color: #4f6af5;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 2px 12px;
+            border-radius: 30px;
+        }
+        .task-item .task-check {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            border: 2px solid #d1d9e6;
+            background: #fff;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .task-item .task-check.done {
+            background: #4f6af5;
+            border-color: #4f6af5;
+            color: #fff;
+        }
+        .task-item .task-check.done i {
+            font-size: 12px;
+        }
+        .task-item .task-check:hover {
+            border-color: #4f6af5;
+        }
+
+        /* ── Tabs ── */
+        .tabs {
+            display: flex;
+            gap: 4px;
+            background: #f1f4fa;
+            border-radius: 14px;
+            padding: 4px;
+            margin-bottom: 14px;
+        }
+        .tabs .tab {
+            flex: 1;
+            text-align: center;
+            padding: 8px 0;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #6b728e;
+            cursor: pointer;
+            transition: 0.2s;
+            border: none;
+            background: transparent;
+            font-family: 'Inter', sans-serif;
+        }
+        .tabs .tab.active {
+            background: #fff;
+            color: #1a1f36;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        }
+        .tabs .tab:hover {
+            color: #1a1f36;
+        }
+
+        /* ── Pomodoro / Today stats ── */
+        .stat-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin: 12px 0 16px;
+        }
+        .stat-card {
+            background: #f8fafc;
+            border-radius: 16px;
+            padding: 14px 16px;
+            text-align: center;
+        }
+        .stat-card .stat-value {
+            font-size: 22px;
+            font-weight: 700;
+            color: #1a1f36;
+        }
+        .stat-card .stat-label {
+            font-size: 13px;
+            color: #6b728e;
+            margin-top: 2px;
+        }
+
+        /* ── Settings ── */
+        .setting-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 0;
+            border-bottom: 1px solid #f1f4fa;
+        }
+        .setting-row:last-child {
+            border-bottom: none;
+        }
+        .setting-row .setting-label {
+            font-weight: 500;
+        }
+        .setting-row .setting-value {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #4f6af5;
+            font-weight: 600;
+        }
+        .setting-row .setting-value i {
+            cursor: pointer;
+            color: #6b728e;
+            font-size: 14px;
+        }
+
+        /* ── Calendar ── */
+        .cal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 12px 0 10px;
+        }
+        .cal-header .cal-month {
+            font-weight: 700;
+            font-size: 18px;
+        }
+        .cal-header .cal-nav {
+            display: flex;
+            gap: 12px;
+            color: #6b728e;
+            cursor: pointer;
+        }
+        .cal-header .cal-nav i:hover {
+            color: #4f6af5;
+        }
+
+        .cal-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+            text-align: center;
+            font-size: 14px;
+        }
+        .cal-grid .cal-day {
+            padding: 8px 0;
+            border-radius: 30px;
+            font-weight: 500;
+            color: #6b728e;
+        }
+        .cal-grid .cal-day.weekend {
+            color: #ef4444;
+        }
+        .cal-grid .cal-day.today {
+            background: #4f6af5;
+            color: #fff;
+            font-weight: 700;
+        }
+        .cal-grid .cal-day.has-event {
+            position: relative;
+        }
+        .cal-grid .cal-day.has-event::after {
+            content: '';
+            position: absolute;
+            bottom: 4px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #4f6af5;
+        }
+
+        .cal-times {
+            margin-top: 14px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            justify-content: center;
+        }
+        .cal-times .time-slot {
+            padding: 4px 10px;
+            background: #f8fafc;
+            border-radius: 30px;
+            font-size: 11px;
+            color: #6b728e;
+            font-weight: 500;
+        }
+        .cal-times .time-slot.active {
+            background: #4f6af5;
+            color: #fff;
+        }
+
+        /* ── Bottom Nav ── */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            max-width: 420px;
+            width: 100%;
+            background: #fff;
+            border-top: 1px solid #eef2f6;
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 0 env(safe-area-inset-bottom, 8px);
+            border-radius: 0 0 32px 32px;
+            z-index: 10;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.04);
+        }
+        .bottom-nav .nav-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            background: transparent;
+            border: none;
+            font-family: 'Inter', sans-serif;
+            font-size: 10px;
+            color: #9aa3b8;
+            cursor: pointer;
+            padding: 4px 12px;
+            transition: 0.2s;
+            position: relative;
+        }
+        .bottom-nav .nav-btn i {
+            font-size: 22px;
+            transition: 0.2s;
+        }
+        .bottom-nav .nav-btn.active {
+            color: #4f6af5;
+        }
+        .bottom-nav .nav-btn.active i {
+            transform: translateY(-2px);
+        }
+        .bottom-nav .nav-btn .badge {
+            position: absolute;
+            top: 0;
+            right: 4px;
+            background: #ef4444;
+            color: #fff;
+            font-size: 9px;
+            font-weight: 700;
+            padding: 1px 6px;
+            border-radius: 30px;
+            line-height: 1.4;
+        }
+
+        /* ── Responsive tweaks ── */
+        @media (max-width: 440px) {
+            .app {
+                padding: 16px 14px 80px;
+                border-radius: 24px;
+            }
+            .greeting h1 {
+                font-size: 20px;
+            }
+            .goal-card .goal-number {
+                font-size: 28px;
+            }
+            .nav-grid {
+                gap: 4px;
+            }
+            .nav-grid .nav-item {
+                font-size: 10px;
+                padding: 8px 2px;
+            }
+            .nav-grid .nav-item i {
+                font-size: 18px;
+            }
+            .score-row .big-score {
+                font-size: 30px;
+            }
+        }
+
+        /* ── Misc ── */
+        .mt-8 {
+            margin-top: 8px;
+        }
+        .mt-12 {
+            margin-top: 12px;
+        }
+        .mt-16 {
+            margin-top: 16px;
+        }
+        .mb-8 {
+            margin-bottom: 8px;
+        }
+        .gap-4 {
+            gap: 4px;
+        }
+        .flex {
+            display: flex;
+        }
+        .flex-between {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+    </style>
 </head>
 <body>
-  <div class="app-shell">
-    <div id="app-layout"></div>
-    <main class="main-content">
-      <div class="page" id="dashboardPage">
-        <div class="page-header">
-          <div>
-            <h1 id="greetMsg">👋 Xin chào!</h1>
-            <p id="greetDate"></p>
-          </div>
+    <div class="app" id="app">
+
+        <!-- ─── SCREEN: LOGIN ─── -->
+        <div class="screen active" id="screen-login">
+            <div class="auth-header">
+                <div class="logo"><i class="fas fa-graduation-cap"></i>StudyFlow</div>
+                <p>Đăng nhập để tiếp tục học tập</p>
+            </div>
+            <div class="input-group">
+                <label>Username</label>
+                <input type="text" placeholder="Nhập username" value="minhanh" />
+            </div>
+            <div class="input-group">
+                <label>Password</label>
+                <input type="password" placeholder="Nhập mật khẩu" value="••••••••" />
+            </div>
+            <div class="auth-options">
+                <label><input type="checkbox" checked /> Ghi nhớ đăng nhập</label>
+                <a href="#">Quên mật khẩu</a>
+            </div>
+            <button class="btn btn-primary" onclick="showScreen('screen-dashboard')">Đăng nhập</button>
+            <div class="auth-footer">
+                Chưa có tài khoản? <a href="#" onclick="showScreen('screen-register')">Đăng ký ngay</a>
+            </div>
         </div>
 
-        <!-- Stat cards -->
-        <div class="grid grid-4" id="statsRow"></div>
-
-        <!-- Recent tasks + Upcoming deadlines -->
-        <div class="grid grid-2" style="margin-top:24px">
-          <div class="card">
-            <div class="section-title">✅ Nhiệm vụ gần đây</div>
-            <div id="recentTasks"></div>
-            <a href="./tasks.html" style="display:block;text-align:center;margin-top:12px;font-size:.83rem;color:var(--primary)">Xem tất cả →</a>
-          </div>
-          <div class="card">
-            <div class="section-title">⚠️ Sắp đến hạn</div>
-            <div id="upcomingDeadlines"></div>
-            <a href="./tasks.html" style="display:block;text-align:center;margin-top:12px;font-size:.83rem;color:var(--primary)">Xem tất cả →</a>
-          </div>
+        <!-- ─── SCREEN: REGISTER ─── -->
+        <div class="screen" id="screen-register">
+            <div class="auth-header">
+                <div class="logo"><i class="fas fa-graduation-cap"></i>StudyFlow</div>
+                <p>Tạo tài khoản mới</p>
+            </div>
+            <div class="input-group">
+                <label>Username</label>
+                <input type="text" placeholder="Nhập username" />
+            </div>
+            <div class="input-group">
+                <label>Password</label>
+                <input type="password" placeholder="Nhập mật khẩu" />
+            </div>
+            <div class="input-group">
+                <label>Confirm Password</label>
+                <input type="password" placeholder="Nhập mật khẩu" />
+            </div>
+            <button class="btn btn-primary" onclick="showScreen('screen-dashboard')">Đăng ký</button>
+            <div class="auth-footer">
+                Đã có tài khoản? <a href="#" onclick="showScreen('screen-login')">Đăng nhập</a>
+            </div>
         </div>
 
-        <!-- Subjects quick view -->
-        <div class="section-title">📚 Môn học của bạn</div>
-        <div class="grid grid-4" id="dashSubjects"></div>
-      </div>
-    </main>
-  </div>
+        <!-- ─── SCREEN: DASHBOARD ─── -->
+        <div class="screen" id="screen-dashboard">
+            <!-- Greeting -->
+            <div class="greeting">
+                <h1>Chào <span>Minh Anh!</span></h1>
+                <span class="date">Thứ Sáu, 26/06/2025</span>
+            </div>
 
-  <script src="./assets/js/auth.js"></script>
-  <script src="./assets/js/script.js"></script>
-  <script>
-    initAppPage("index");
+            <!-- Goal -->
+            <div class="goal-card">
+                <div>
+                    <div class="goal-label">Mục tiêu ngày</div>
+                    <div class="goal-number">3 <small>/ 5</small></div>
+                </div>
+                <div style="display:flex;gap:6px;">
+                    <span style="background:rgba(255,255,255,0.2);padding:4px 12px;border-radius:30px;font-size:13px;">⚡</span>
+                </div>
+            </div>
 
-    const user = getCurrentUser();
-    const hour = new Date().getHours();
-    const greet = hour < 12 ? "Chào buổi sáng" : hour < 18 ? "Chào buổi chiều" : "Chào buổi tối";
-    document.getElementById("greetMsg").textContent = `${greet}, ${user?.fullname || user?.username}! 👋`;
-    document.getElementById("greetDate").textContent = new Date().toLocaleDateString("vi-VN", { weekday:"long", day:"numeric", month:"long", year:"numeric" });
+            <!-- Nav Grid -->
+            <div class="nav-grid">
+                <button class="nav-item active"><i class="fas fa-award"></i>Bằng điểm</button>
+                <button class="nav-item"><i class="fas fa-pen"></i>Ghi chú</button>
+                <button class="nav-item"><i class="fas fa-chart-simple"></i>Thống kê</button>
+                <button class="nav-item"><i class="fas fa-user"></i>Hồ sơ</button>
+                <button class="nav-item"><i class="fas fa-gear"></i>Cài đặt</button>
+            </div>
 
-    // Stats
-    const tasks = getUserData("tasks", []);
-    const subjects = getUserData("subjects", []);
-    const notes = getUserData("notes", []);
-    const pStats = getUserData("pomodoro_stats", { sessions:0 });
-    const doneTasks = tasks.filter(t => t.done).length;
+            <!-- Quote -->
+            <div class="quote-box">
+                “The beautiful thing about learning is that no one can take it away from you.”
+                <span class="author">— B.B. King</span>
+            </div>
 
-    const statData = [
-      { icon:"📚", label:"Môn học", num:subjects.length, bg:"#eef2ff", iconBg:"#4f46e5" },
-      { icon:"✅", label:"Nhiệm vụ hoàn thành", num:`${doneTasks}/${tasks.length}`, bg:"#dcfce7", iconBg:"#16a34a" },
-      { icon:"⏱️", label:"Phiên Pomodoro hôm nay", num:pStats.sessions, bg:"#fef3c7", iconBg:"#f59e0b" },
-      { icon:"📝", label:"Ghi chú", num:notes.length, bg:"#e0f2fe", iconBg:"#0ea5e9" },
-    ];
+            <!-- Average Score -->
+            <div class="score-row">
+                <div class="big-score">8.2 <small>/ 10</small></div>
+                <div class="score-meta">
+                    <div>Điểm trung bình</div>
+                    <div class="trend"><i class="fas fa-arrow-up"></i> 0.6 so với tuần trước</div>
+                </div>
+                <div style="margin-left:auto;background:#eef2fe;padding:4px 12px;border-radius:30px;font-size:13px;font-weight:600;color:#4f6af5;">4</div>
+            </div>
 
-    document.getElementById("statsRow").innerHTML = statData.map(s => `
-      <div class="card stat-card">
-        <div class="stat-icon" style="background:${s.bg};color:${s.iconBg};font-size:1.4rem">${s.icon}</div>
-        <div>
-          <div class="num">${s.num}</div>
-          <div class="label">${s.label}</div>
+            <!-- Recent Tasks -->
+            <div class="section-header">
+                <h3>Công việc gần nhất</h3>
+                <a href="#" onclick="showScreen('screen-tasks')">Xem tất cả</a>
+            </div>
+            <div class="task-item">
+                <div class="task-info">
+                    <span class="task-name">Toán</span>
+                    <span class="task-deadline"><i class="far fa-calendar"></i>Hạn: 28/06/2025</span>
+                </div>
+                <div class="task-check"><i class="fas fa-check" style="opacity:0;"></i></div>
+            </div>
+            <div class="task-item">
+                <div class="task-info">
+                    <span class="task-name">Văn</span>
+                    <span class="task-deadline"><i class="far fa-calendar"></i>Hạn: 28/06/2025</span>
+                </div>
+                <div class="task-check"><i class="fas fa-check" style="opacity:0;"></i></div>
+            </div>
+            <div class="task-item">
+                <div class="task-info">
+                    <span class="task-name">Bài tập Toán chung 3</span>
+                    <span class="task-deadline"><i class="far fa-calendar"></i>Hạn: 28/06/2025</span>
+                </div>
+                <div class="task-check"><i class="fas fa-check" style="opacity:0;"></i></div>
+            </div>
+            <div class="task-item">
+                <div class="task-info">
+                    <span class="task-name">Bài tập Vật Lý bất lý</span>
+                    <span class="task-deadline"><i class="far fa-calendar"></i>Hạn: 28/06/2025</span>
+                </div>
+                <div class="task-check"><i class="fas fa-check" style="opacity:0;"></i></div>
+            </div>
+            <div class="task-item" style="margin-bottom:0;">
+                <div class="task-info">
+                    <span class="task-name">Thống kê</span>
+                    <span class="task-deadline"><i class="far fa-calendar"></i>Hạn: 28/06/2025</span>
+                </div>
+                <div class="task-check"><i class="fas fa-check" style="opacity:0;"></i></div>
+            </div>
         </div>
-      </div>`).join("");
 
-    // Recent tasks
-    const recentTasks = [...tasks].sort((a,b) => new Date(b.createdAt)-new Date(a.createdAt)).slice(0,5);
-    document.getElementById("recentTasks").innerHTML = recentTasks.length
-      ? recentTasks.map(t => `
-        <div class="task-item" style="padding:10px 0;border:none;border-bottom:1px solid var(--border)">
-          <input type="checkbox" ${t.done?"checked":""} disabled>
-          <div class="task-main"><div class="task-title" style="font-size:.88rem">${escapeHtml(t.title)}</div></div>
-          <span class="tag ${t.done?"tag-success":"tag-warning"}">${t.done?"Xong":"Đang làm"}</span>
-        </div>`).join("")
-      : `<div class="empty-state" style="padding:24px 0"><div class="e-icon">✅</div><p>Chưa có nhiệm vụ nào</p></div>`;
+        <!-- ─── SCREEN: TASKS ─── -->
+        <div class="screen" id="screen-tasks">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+                <button onclick="showScreen('screen-dashboard')" style="background:none;border:none;font-size:20px;cursor:pointer;color:#1a1f36;"><i class="fas fa-arrow-left"></i></button>
+                <h2 style="font-size:22px;font-weight:700;">Công việc</h2>
+            </div>
 
-    // Upcoming deadlines
-    const now = new Date();
-    const upcoming = tasks.filter(t => !t.done && t.deadline && new Date(t.deadline) > now)
-      .sort((a,b) => new Date(a.deadline)-new Date(b.deadline)).slice(0,5);
-    document.getElementById("upcomingDeadlines").innerHTML = upcoming.length
-      ? upcoming.map(t => `
-        <div style="padding:10px 0;border-bottom:1px solid var(--border);font-size:.85rem">
-          <div style="font-weight:600">${escapeHtml(t.title)}</div>
-          <div style="color:var(--text-soft);font-size:.75rem;margin-top:2px">📅 ${formatDateTime(t.deadline)}</div>
-        </div>`).join("")
-      : `<div class="empty-state" style="padding:24px 0"><div class="e-icon">🎉</div><p>Không có deadline sắp tới</p></div>`;
+            <div class="tabs">
+                <button class="tab active">Tất cả</button>
+                <button class="tab">Chưa hoàn thành</button>
+                <button class="tab">Đã hoàn thành</button>
+            </div>
 
-    // Dashboard subjects
-    const dashSubs = subjects.slice(0,4);
-    document.getElementById("dashSubjects").innerHTML = dashSubs.length
-      ? dashSubs.map(s => {
-          const subTasks = tasks.filter(t => t.subjectId === s.id);
-          const pct = subTasks.length ? Math.round(subTasks.filter(t=>t.done).length/subTasks.length*100) : 0;
-          return `<a href="./subjects.html" class="card subject-card" style="border-top-color:${s.color};display:block">
-            <div class="s-name">${escapeHtml(s.name)}</div>
-            <div class="s-meta">${s.credits||0} tín chỉ • ${subTasks.length} nhiệm vụ</div>
-            <div class="progress-bar" style="margin-top:10px"><div class="progress-fill" style="width:${pct}%;background:${s.color}"></div></div>
-            <div class="s-meta" style="margin-top:6px">${pct}% hoàn thành</div>
-          </a>`;
-        }).join("")
-      : `<div class="empty-state" style="grid-column:1/-1"><div class="e-icon">📚</div><p>Chưa có môn học nào. <a href="./subjects.html" style="color:var(--primary)">Thêm ngay →</a></p></div>`;
-  </script>
+            <div class="task-item">
+                <div class="task-info">
+                    <span class="task-name">Bài tập Toán chung 3</span>
+                    <span class="task-deadline"><i class="far fa-calendar"></i>Hạn: 28/06/2025</span>
+                </div>
+                <div class="task-check"><i class="fas fa-check" style="opacity:0;"></i></div>
+            </div>
+            <div class="task-item">
+                <div class="task-info">
+                    <span class="task-name">Bài tập Vật Lý bất lý</span>
+                    <span class="task-deadline"><i class="far fa-calendar"></i>Hạn: 28/06/2025</span>
+                </div>
+                <div class="task-check"><i class="fas fa-check" style="opacity:0;"></i></div>
+            </div>
+            <div class="task-item" style="margin-bottom:0;">
+                <div class="task-info">
+                    <span class="task-name">Đọc trước bài Hóa học mới</span>
+                    <span class="task-deadline"><i class="far fa-calendar"></i>Hạn: 28/06/2025</span>
+                </div>
+                <div class="task-check"><i class="fas fa-check" style="opacity:0;"></i></div>
+            </div>
+        </div>
+
+        <!-- ─── SCREEN: POMODORO ─── -->
+        <div class="screen" id="screen-pomodoro">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+                <button onclick="showScreen('screen-dashboard')" style="background:none;border:none;font-size:20px;cursor:pointer;color:#1a1f36;"><i class="fas fa-arrow-left"></i></button>
+                <h2 style="font-size:22px;font-weight:700;">Pomodoro</h2>
+            </div>
+
+            <div class="tabs">
+                <button class="tab active">Tất cả</button>
+                <button class="tab">Chưa hoàn thành</button>
+                <button class="tab">Đã hoàn thành</button>
+            </div>
+
+            <div class="task-item">
+                <div class="task-info">
+                    <span class="task-name">Bài tập Toán chung 3</span>
+                    <span class="task-deadline"><i class="far fa-calendar"></i>Hạn: 28/06/2025</span>
+                </div>
+                <div class="task-check"><i class="fas fa-check" style="opacity:0;"></i></div>
+            </div>
+            <div class="task-item">
+                <div class="task-info">
+                    <span class="task-name">Bài tập Vật Lý bất lý</span>
+                    <span class="task-deadline"><i class="far fa-calendar"></i>Hạn: 28/06/2025</span>
+                </div>
+                <div class="task-check"><i class="fas fa-check" style="opacity:0;"></i></div>
+            </div>
+            <div class="task-item" style="margin-bottom:0;">
+                <div class="task-info">
+                    <span class="task-name">Thống kê</span>
+                    <span class="task-deadline"><i class="far fa-calendar"></i>Hạn: 28/06/2025</span>
+                </div>
+                <div class="task-check"><i class="fas fa-check" style="opacity:0;"></i></div>
+            </div>
+        </div>
+
+        <!-- ─── SCREEN: TODAY ─── -->
+        <div class="screen" id="screen-today">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+                <button onclick="showScreen('screen-dashboard')" style="background:none;border:none;font-size:20px;cursor:pointer;color:#1a1f36;"><i class="fas fa-arrow-left"></i></button>
+                <h2 style="font-size:22px;font-weight:700;">Hôm nay</h2>
+            </div>
+
+            <div class="stat-grid">
+                <div class="stat-card">
+                    <div class="stat-value">3</div>
+                    <div class="stat-label">Phân học</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">4.5h</div>
+                    <div class="stat-label">Tổng thời gian</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">3.2h</div>
+                    <div class="stat-label">Thời gian tập trung</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">1.3h</div>
+                    <div class="stat-label">Thời gian nghỉ</div>
+                </div>
+            </div>
+
+            <div class="task-item">
+                <div class="task-info">
+                    <span class="task-name">Toán - Hình học</span>
+                    <span class="task-deadline"><i class="far fa-clock"></i> 08:00 – 09:30</span>
+                </div>
+                <span class="task-badge">Đang học</span>
+            </div>
+            <div class="task-item">
+                <div class="task-info">
+                    <span class="task-name">Văn - Đọc hiểu</span>
+                    <span class="task-deadline"><i class="far fa-clock"></i> 10:00 – 11:30</span>
+                </div>
+                <span class="task-badge">Sắp tới</span>
+            </div>
+            <div class="task-item" style="margin-bottom:0;">
+                <div class="task-info">
+                    <span class="task-name">Vật Lý - Bài tập</span>
+                    <span class="task-deadline"><i class="far fa-clock"></i> 14:00 – 15:30</span>
+                </div>
+                <span class="task-badge">Sắp tới</span>
+            </div>
+        </div>
+
+        <!-- ─── SCREEN: SETTINGS ─── -->
+        <div class="screen" id="screen-settings">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+                <button onclick="showScreen('screen-dashboard')" style="background:none;border:none;font-size:20px;cursor:pointer;color:#1a1f36;"><i class="fas fa-arrow-left"></i></button>
+                <h2 style="font-size:22px;font-weight:700;">Cài đặt</h2>
+            </div>
+
+            <div class="setting-row">
+                <span class="setting-label">Thời gian học</span>
+                <div class="setting-value">25 phút <i class="fas fa-chevron-right"></i></div>
+            </div>
+            <div class="setting-row">
+                <span class="setting-label">Thời gian nghỉ</span>
+                <div class="setting-value">5 phút <i class="fas fa-chevron-right"></i></div>
+            </div>
+            <div class="setting-row" style="border-bottom:none;">
+                <span class="setting-label">Số vòng tập</span>
+                <div class="setting-value">4 vòng <i class="fas fa-chevron-right"></i></div>
+            </div>
+        </div>
+
+        <!-- ─── SCREEN: CALENDAR ─── -->
+        <div class="screen" id="screen-calendar">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;">
+                <button onclick="showScreen('screen-dashboard')" style="background:none;border:none;font-size:20px;cursor:pointer;color:#1a1f36;"><i class="fas fa-arrow-left"></i></button>
+                <h2 style="font-size:22px;font-weight:700;">Lịch học</h2>
+            </div>
+
+            <div class="cal-header">
+                <span class="cal-month">Tháng 6, 2025</span>
+                <div class="cal-nav">
+                    <i class="fas fa-chevron-left"></i>
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+            </div>
+
+            <div class="cal-grid">
+                <span class="cal-day">T2</span>
+                <span class="cal-day">T3</span>
+                <span class="cal-day">T4</span>
+                <span class="cal-day">T5</span>
+                <span class="cal-day">T6</span>
+                <span class="cal-day weekend">T7</span>
+                <span class="cal-day weekend">CN</span>
+                <!-- Week 1 -->
+                <span class="cal-day">26</span>
+                <span class="cal-day">27</span>
+                <span class="cal-day">28</span>
+                <span class="cal-day">29</span>
+                <span class="cal-day">30</span>
+                <span class="cal-day weekend">31</span>
+                <span class="cal-day weekend">1</span>
+                <!-- Week 2 -->
+                <span class="cal-day">2</span>
+                <span class="cal-day">3</span>
+                <span class="cal-day">4</span>
+                <span class="cal-day">5</span>
+                <span class="cal-day">6</span>
+                <span class="cal-day weekend">7</span>
+                <span class="cal-day weekend">8</span>
+                <!-- Week 3 -->
+                <span class="cal-day">9</span>
+                <span class="cal-day">10</span>
+                <span class="cal-day">11</span>
+                <span class="cal-day">12</span>
+                <span class="cal-day today">13</span>
+                <span class="cal-day weekend">14</span>
+                <span class="cal-day weekend">15</span>
+                <!-- Week 4 -->
+                <span class="cal-day">16</span>
+                <span class="cal-day">17</span>
+                <span class="cal-day">18</span>
+                <span class="cal-day">19</span>
+                <span class="cal-day">20</span>
+                <span class="cal-day weekend">21</span>
+                <span class="cal-day weekend">22</span>
+                <!-- Week 5 -->
+                <span class="cal-day">23</span>
+                <span class="cal-day">24</span>
+                <span class="cal-day">25</span>
+                <span class="cal-day">26</span>
+                <span class="cal-day">27</span>
+                <span class="cal-day weekend">28</span>
+                <span class="cal-day weekend">29</span>
+            </div>
+
+            <div style="margin:14px 0 6px;font-weight:600;font-size:15px;">Hôm nay · 13/06</div>
+            <div class="cal-times">
+                <span class="time-slot active">07:00</span>
+                <span class="time-slot">08:00</span>
+                <span class="time-slot active">09:00</span>
+                <span class="time-slot">10:00</span>
+                <span class="time-slot">11:00</span>
+                <span class="time-slot">12:00</span>
+                <span class="time-slot">13:00</span>
+                <span class="time-slot">14:00</span>
+                <span class="time-slot">15:00</span>
+                <span class="time-slot">16:00</span>
+                <span class="time-slot">17:00</span>
+                <span class="time-slot">18:00</span>
+                <span class="time-slot">19:00</span>
+                <span class="time-slot">20:00</span>
+                <span class="time-slot">21:00</span>
+                <span class="time-slot">22:00</span>
+                <span class="time-slot">23:00</span>
+            </div>
+        </div>
+
+        <!-- ─── BOTTOM NAV ─── -->
+        <div class="bottom-nav">
+            <button class="nav-btn active" data-screen="screen-dashboard">
+                <i class="fas fa-house"></i>
+                <span>Trang chủ</span>
+            </button>
+            <button class="nav-btn" data-screen="screen-tasks">
+                <i class="fas fa-list-check"></i>
+                <span>Công việc</span>
+                <span class="badge">3</span>
+            </button>
+            <button class="nav-btn" data-screen="screen-pomodoro">
+                <i class="fas fa-clock"></i>
+                <span>Pomodoro</span>
+            </button>
+            <button class="nav-btn" data-screen="screen-today">
+                <i class="fas fa-calendar-day"></i>
+                <span>Hôm nay</span>
+            </button>
+            <button class="nav-btn" data-screen="screen-calendar">
+                <i class="fas fa-calendar-alt"></i>
+                <span>Lịch</span>
+            </button>
+        </div>
+
+    </div>
+
+    <script>
+        // ── Screen switching ──
+        function showScreen(id) {
+            // hide all screens
+            document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
+            // show target
+            const target = document.getElementById(id);
+            if (target) target.classList.add('active');
+
+            // update bottom nav
+            document.querySelectorAll('.bottom-nav .nav-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.screen === id);
+            });
+
+            // scroll to top
+            document.getElementById('app').scrollTop = 0;
+        }
+
+        // ── Bottom nav clicks ──
+        document.querySelectorAll('.bottom-nav .nav-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const screenId = this.dataset.screen;
+                if (screenId) showScreen(screenId);
+            });
+        });
+
+        // ── Tab switching (demo) ──
+        document.querySelectorAll('.tabs').forEach(tabGroup => {
+            const tabs = tabGroup.querySelectorAll('.tab');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    tabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+        });
+
+        // ── Task check toggle ──
+        document.querySelectorAll('.task-check').forEach(check => {
+            check.addEventListener('click', function() {
+                this.classList.toggle('done');
+                if (this.classList.contains('done')) {
+                    this.innerHTML = '<i class="fas fa-check"></i>';
+                } else {
+                    this.innerHTML = '<i class="fas fa-check" style="opacity:0;"></i>';
+                }
+            });
+        });
+
+        // ── Nav grid items (demo) ──
+        document.querySelectorAll('.nav-grid .nav-item').forEach(item => {
+            item.addEventListener('click', function() {
+                document.querySelectorAll('.nav-grid .nav-item').forEach(i => i.classList.remove('active'));
+                this.classList.add('active');
+                // map to screens
+                const label = this.textContent.trim();
+                if (label === 'Cài đặt') showScreen('screen-settings');
+                // others just visual
+            });
+        });
+
+        // ── Quote author fix ──
+        // (already correct)
+
+        console.log('🌟 StudyFlow UI ready!');
+    </script>
+
 </body>
 </html>
